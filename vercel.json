@@ -23,7 +23,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "students_records_management_system/wsgi.py"
+      "dest": "/students_records_management_system/wsgi.py"
     }
   ]
 }
