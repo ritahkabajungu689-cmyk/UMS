@@ -1,0 +1,58 @@
+{% extends 'records/base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white shadow-sm border border-gray-200 rounded-lg rounded-xl p-8 md:p-10 shadow-sm border border-slate-100 mb-8 relative overflow-hidden">
+    <div class="absolute -right-20 top-0 w-64 h-64 bg-sidebarActive/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="mb-8">
+        <h2 class="text-3xl font-heading font-bold text-slate-900 tracking-tight">Register Student</h2>
+        <p class="mt-1 text-slate-500 font-medium">Create a new student profile in the system.</p>
+    </div>
+    
+    <form method="post" enctype="multipart/form-data" class="space-y-6 relative z-10" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <div class="rounded-xl bg-red-50 p-4 border border-red-200 text-sm text-red-600 font-medium">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+        
+        <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.username.id_for_label }}">Username</label><div class="relative">{{ form.username }}</div>{% if form.username.errors %}<p class="text-xs text-red-500">{{ form.username.errors.0 }}</p>{% endif %}</div>
+            <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.password.id_for_label }}">Password</label><div class="relative">{{ form.password }}</div>{% if form.password.errors %}<p class="text-xs text-red-500">{{ form.password.errors.0 }}</p>{% endif %}</div>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.first_name.id_for_label }}">First Name</label><div class="relative">{{ form.first_name }}</div>{% if form.first_name.errors %}<p class="text-xs text-red-500">{{ form.first_name.errors.0 }}</p>{% endif %}</div>
+            <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.last_name.id_for_label }}">Last Name</label><div class="relative">{{ form.last_name }}</div>{% if form.last_name.errors %}<p class="text-xs text-red-500">{{ form.last_name.errors.0 }}</p>{% endif %}</div>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.email.id_for_label }}">Email</label><div class="relative">{{ form.email }}</div>{% if form.email.errors %}<p class="text-xs text-red-500">{{ form.email.errors.0 }}</p>{% endif %}</div>
+            <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.role.id_for_label }}">Role</label><div class="relative">{{ form.role }}</div>{% if form.role.errors %}<p class="text-xs text-red-500">{{ form.role.errors.0 }}</p>{% endif %}</div>
+        </div>
+        <hr class="border-slate-100 my-6">
+        <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.admission_number.id_for_label }}">Admission Number</label><div class="relative">{{ form.admission_number }}</div>{% if form.admission_number.errors %}<p class="text-xs text-red-500">{{ form.admission_number.errors.0 }}</p>{% endif %}</div>
+            <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.date_of_birth.id_for_label }}">Date of Birth</label><div class="relative">{{ form.date_of_birth }}</div>{% if form.date_of_birth.errors %}<p class="text-xs text-red-500">{{ form.date_of_birth.errors.0 }}</p>{% endif %}</div>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.gender.id_for_label }}">Gender</label><div class="relative">{{ form.gender }}</div>{% if form.gender.errors %}<p class="text-xs text-red-500">{{ form.gender.errors.0 }}</p>{% endif %}</div>
+            <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.department.id_for_label }}">Department</label><div class="relative">{{ form.department }}</div>{% if form.department.errors %}<p class="text-xs text-red-500">{{ form.department.errors.0 }}</p>{% endif %}</div>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.programme.id_for_label }}">Programme</label><div class="relative">{{ form.programme }}</div>{% if form.programme.errors %}<p class="text-xs text-red-500">{{ form.programme.errors.0 }}</p>{% endif %}</div>
+            <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.status.id_for_label }}">Status</label><div class="relative">{{ form.status }}</div>{% if form.status.errors %}<p class="text-xs text-red-500">{{ form.status.errors.0 }}</p>{% endif %}</div>
+        </div>
+        <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.phone.id_for_label }}">Phone</label><div class="relative">{{ form.phone }}</div>{% if form.phone.errors %}<p class="text-xs text-red-500">{{ form.phone.errors.0 }}</p>{% endif %}</div>
+        <div class="space-y-1.5"><label class="block text-sm font-semibold text-slate-700" for="{{ form.address.id_for_label }}">Address</label><div class="relative">{{ form.address }}</div>{% if form.address.errors %}<p class="text-xs text-red-500">{{ form.address.errors.0 }}</p>{% endif %}</div>
+        
+        <div class="space-y-1.5">
+            <label class="block text-sm font-semibold text-slate-700" for="{{ form.photo.id_for_label }}">Student Photo</label>
+            <div class="relative">{{ form.photo }}</div>
+            <p class="text-xs text-slate-400">Upload a clear passport-size photo (JPG, PNG).</p>
+            {% if form.photo.errors %}<p class="text-xs text-red-500">{{ form.photo.errors.0 }}</p>{% endif %}
+        </div>
+        
+        <button type="submit" class="w-full mt-6 rounded-xl bg-sidebar px-6 py-3.5 text-white font-semibold shadow-md hover:bg-slate-800 transition-colors">
+            Save Student
+        </button>
+    </form>
+</div>
+{% endblock %}

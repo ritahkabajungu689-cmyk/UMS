@@ -1,0 +1,72 @@
+{% extends 'records/base.html' %}
+{% block content %}
+<div class="bg-white rounded-md shadow-sm border border-cardBorder p-6">
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            <div>
+                <h3 class="text-lg font-bold text-slate-800 leading-tight">Academic Results</h3>
+                <p class="text-[10px] text-slate-400 uppercase tracking-wider">Live Results Board</p>
+            </div>
+        </div>
+        {% if user.userprofile.role == 'lecturer' or user.userprofile.role == 'administrator' %}
+        <a href="{% url 'create_result' %}" class="inline-flex items-center gap-2 bg-sidebar text-white text-xs font-semibold px-4 py-2 rounded hover:bg-sidebarActive transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            Add Result
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Grade Legend -->
+    <div class="flex items-center gap-4 mb-5 flex-wrap">
+        <span class="text-xs text-slate-500 font-semibold">Grade Key:</span>
+        <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-bold">A = 80–100</span>
+        <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-bold">B = 65–79</span>
+        <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-xs font-bold">C = 50–64</span>
+        <span class="px-2 py-0.5 bg-orange-100 text-orange-700 rounded text-xs font-bold">D = 40–49</span>
+        <span class="px-2 py-0.5 bg-red-100 text-red-700 rounded text-xs font-bold">F = 0–39</span>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-sm">
+            <thead>
+                <tr class="border-b border-slate-200">
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">#</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Student</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Adm. No.</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Course</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Code</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Score</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Grade</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Semester</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for r in results %}
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 text-slate-400 text-xs">{{ forloop.counter }}</td>
+                    <td class="py-3 px-4 font-medium text-slate-800">{{ r.student.user.get_full_name|default:r.student.user.username }}</td>
+                    <td class="py-3 px-4 text-slate-500 text-xs">{{ r.student.admission_number }}</td>
+                    <td class="py-3 px-4 text-slate-600">{{ r.course.name }}</td>
+                    <td class="py-3 px-4 text-xs text-slate-500 font-mono">{{ r.course.code }}</td>
+                    <td class="py-3 px-4 font-bold text-slate-800">{{ r.score }}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-0.5 rounded text-xs font-bold
+                            {% if r.grade == 'A' %}bg-green-100 text-green-700
+                            {% elif r.grade == 'B' %}bg-blue-100 text-blue-700
+                            {% elif r.grade == 'C' %}bg-yellow-100 text-yellow-700
+                            {% elif r.grade == 'D' %}bg-orange-100 text-orange-700
+                            {% else %}bg-red-100 text-red-700{% endif %}">
+                            {{ r.grade }}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-slate-500 text-xs">{{ r.semester }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="py-10 text-center text-slate-400 text-sm">No results recorded yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

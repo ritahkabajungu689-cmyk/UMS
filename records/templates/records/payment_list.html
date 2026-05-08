@@ -1,0 +1,205 @@
+{% extends 'records/base.html' %}
+{% block content %}
+
+{% if payment_summary %}
+<!-- Student Payment Summary -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-cardBorder relative overflow-hidden">
+        <div class="flex items-center gap-2 mb-2">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="text-sm font-semibold text-slate-500">Total Payable</span>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800 mb-1">UGX {{ payment_summary.total_payable|floatformat:0 }}</h2>
+        <p class="text-[10px] text-slate-400 uppercase tracking-wide">Study Year: 2025-2026</p>
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-blue-400"></div>
+    </div>
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-cardBorder relative overflow-hidden">
+        <div class="flex items-center gap-2 mb-2">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span class="text-sm font-semibold text-slate-500">Total Paid</span>
+        </div>
+        <h2 class="text-2xl font-bold text-green-600 mb-1">UGX {{ payment_summary.total_paid|floatformat:0 }}</h2>
+        <p class="text-[10px] text-slate-400 uppercase tracking-wide">Payments Confirmed</p>
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-green-400"></div>
+    </div>
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-cardBorder relative overflow-hidden">
+        <div class="flex items-center gap-2 mb-2">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span class="text-sm font-semibold text-slate-500">Total Due</span>
+        </div>
+        <h2 class="text-2xl font-bold {% if payment_summary.total_due > 0 %}text-red-600{% else %}text-green-600{% endif %} mb-1">
+            UGX {{ payment_summary.total_due|floatformat:0 }}
+        </h2>
+        <p class="text-[10px] text-slate-400 uppercase tracking-wide">Outstanding Balance</p>
+        <div class="absolute bottom-0 left-0 w-full h-1 {% if payment_summary.total_due > 0 %}bg-red-400{% else %}bg-green-400{% endif %}"></div>
+    </div>
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-cardBorder relative overflow-hidden">
+        <div class="flex items-center gap-2 mb-2">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+            <span class="text-sm font-semibold text-slate-500">Transactions</span>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800 mb-1">{{ payments|length }}</h2>
+        <p class="text-[10px] text-slate-400 uppercase tracking-wide">Payment Records</p>
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-purple-400"></div>
+    </div>
+</div>
+
+<!-- Payment Breakdown Chart (per-term bar chart) -->
+<div class="bg-white rounded-xl shadow-sm border border-cardBorder p-6 mb-6">
+    <div class="flex items-center gap-3 mb-5">
+        <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <div>
+            <h3 class="text-base font-bold text-slate-800 leading-tight">Fee Breakdown — 2025/26</h3>
+            <p class="text-[10px] text-slate-400 uppercase tracking-wider">Cavendish University Uganda</p>
+        </div>
+    </div>
+    <div id="term-chart" class="relative h-44 w-full border-b border-slate-200 flex items-end gap-3 px-4 pb-0">
+        <div class="absolute w-full border-t border-slate-100 bottom-[25%] left-0"></div>
+        <div class="absolute w-full border-t border-slate-100 bottom-[50%] left-0"></div>
+        <div class="absolute w-full border-t border-slate-100 bottom-[75%] left-0"></div>
+        {% for term, amt in payment_summary.term_totals.items %}
+        {% with pct=amt|floatformat:0 %}
+        <div class="flex-1 flex flex-col items-center group relative" style="min-width:60px">
+            <div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-slate-800 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap transition">
+                UGX {{ amt|floatformat:0 }}
+            </div>
+            <div class="w-full bg-blue-400 rounded-t transition-all" style="height:{% widthratio amt payment_summary.total_payable 100 %}%"></div>
+        </div>
+        {% endwith %}
+        {% endfor %}
+    </div>
+    <div class="flex gap-3 px-4 mt-2 text-[10px] text-slate-400 font-medium text-center">
+        {% for term in payment_summary.term_totals.keys %}
+        <div class="flex-1 truncate">{{ term }}</div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="bg-white rounded-md shadow-sm border border-cardBorder p-6">
+    <!-- Header -->
+
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+            <div>
+                <h3 class="text-lg font-bold text-slate-800 leading-tight">Payment Records</h3>
+                <p class="text-[10px] text-slate-400 uppercase tracking-wider">Finance Department</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <!-- Currency Toggle -->
+            <div class="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+                <button id="btn-ugx" onclick="setCurrency('UGX')"
+                    class="px-3 py-1.5 text-xs font-bold rounded-md transition-all bg-sidebar text-white shadow">UGX</button>
+                <button id="btn-usd" onclick="setCurrency('USD')"
+                    class="px-3 py-1.5 text-xs font-bold rounded-md transition-all text-slate-500 hover:bg-white">USD</button>
+            </div>
+            {% if user.userprofile.role != 'student' %}
+            <a href="{% url 'create_payment' %}" class="inline-flex items-center gap-2 bg-sidebar text-white text-xs font-semibold px-4 py-2 rounded hover:bg-sidebarActive transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                Record Payment
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Summary Bar -->
+    <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="bg-slate-50 rounded-md p-4 border border-slate-200">
+            <p class="text-xs text-slate-500 font-semibold mb-1">Total Collected</p>
+            <p class="text-2xl font-bold text-slate-800" data-ugx="{{ total_ugx|default:0 }}" id="stat-total">
+                UGX {{ total_ugx|default:"0"|floatformat:0 }}
+            </p>
+        </div>
+        <div class="bg-slate-50 rounded-md p-4 border border-slate-200">
+            <p class="text-xs text-slate-500 font-semibold mb-1">Total Records</p>
+            <p class="text-2xl font-bold text-slate-800">{{ payments|length }}</p>
+        </div>
+        <div class="bg-slate-50 rounded-md p-4 border border-slate-200">
+            <p class="text-xs text-slate-500 font-semibold mb-1">Exchange Rate</p>
+            <p class="text-2xl font-bold text-slate-800" id="rate-display">1 USD = 3,750 UGX</p>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-sm">
+            <thead>
+                <tr class="border-b border-slate-200">
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">#</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Student</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Adm. No.</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Term / Fee</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">
+                        Amount (<span id="currency-label">UGX</span>)
+                    </th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Date Paid</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Note</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for p in payments %}
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 text-slate-400 text-xs">{{ forloop.counter }}</td>
+                    <td class="py-3 px-4 font-medium text-slate-800">{{ p.student.user.get_full_name|default:p.student.user.username }}</td>
+                    <td class="py-3 px-4 text-slate-500 text-xs">{{ p.student.admission_number }}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-xs font-semibold">{{ p.term }}</span>
+                    </td>
+                    <td class="py-3 px-4 font-bold text-slate-800"
+                        data-ugx="{{ p.amount }}"
+                        data-usd="{{ p.amount|floatformat:2 }}"
+                        id="amt-{{ forloop.counter }}">
+                        {{ p.amount|floatformat:0 }}
+                    </td>
+                    <td class="py-3 px-4 text-slate-500">{{ p.paid_on|date:"M d, Y" }}</td>
+                    <td class="py-3 px-4 text-slate-400 text-xs">{{ p.description|default:"—" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="py-8 text-center text-slate-400">No payments recorded yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+const RATE = 3750; // 1 USD = 3750 UGX
+let currentCurrency = 'UGX';
+
+function setCurrency(cur) {
+    currentCurrency = cur;
+    document.getElementById('currency-label').textContent = cur;
+    document.getElementById('btn-ugx').className = cur === 'UGX'
+        ? 'px-3 py-1.5 text-xs font-bold rounded-md transition-all bg-sidebar text-white shadow'
+        : 'px-3 py-1.5 text-xs font-bold rounded-md transition-all text-slate-500 hover:bg-white';
+    document.getElementById('btn-usd').className = cur === 'USD'
+        ? 'px-3 py-1.5 text-xs font-bold rounded-md transition-all bg-sidebar text-white shadow'
+        : 'px-3 py-1.5 text-xs font-bold rounded-md transition-all text-slate-500 hover:bg-white';
+
+    // Update each amount cell
+    document.querySelectorAll('[data-ugx]').forEach(el => {
+        if (el.id && el.id.startsWith('amt-')) {
+            const ugx = parseFloat(el.getAttribute('data-ugx'));
+            const val = cur === 'USD' ? (ugx / RATE).toFixed(2) : Math.round(ugx).toLocaleString();
+            el.textContent = val;
+        }
+    });
+
+    // Update total
+    const totalEl = document.getElementById('stat-total');
+    if (totalEl) {
+        const ugxTotal = parseFloat(totalEl.getAttribute('data-ugx'));
+        if (cur === 'USD') {
+            totalEl.textContent = 'USD ' + (ugxTotal / RATE).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+        } else {
+            totalEl.textContent = 'UGX ' + Math.round(ugxTotal).toLocaleString();
+        }
+    }
+
+    document.getElementById('rate-display').textContent = cur === 'USD'
+        ? '1 USD = 3,750 UGX' : '1 USD = 3,750 UGX';
+}
+</script>
+{% endblock %}

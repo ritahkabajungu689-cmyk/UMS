@@ -1,0 +1,63 @@
+{% extends 'records/base.html' %}
+{% block content %}
+<div class="bg-white rounded-md shadow-sm border border-cardBorder p-6">
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            <div>
+                <h3 class="text-lg font-bold text-slate-800 leading-tight">Course Catalogue</h3>
+                <p class="text-[10px] text-slate-400 uppercase tracking-wider">Computer Science Department — All Programmes</p>
+            </div>
+        </div>
+        {% if user.userprofile.role == 'lecturer' or user.userprofile.role == 'administrator' %}
+        <a href="{% url 'course_create' %}" class="inline-flex items-center gap-2 bg-sidebar text-white text-xs font-semibold px-4 py-2 rounded hover:bg-sidebarActive transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            Add Course
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Stats strip -->
+    <div class="flex items-center gap-6 mb-5 px-1">
+        <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-green-500"></div>
+            <span class="text-xs text-slate-600 font-semibold">{{ courses|length }} Courses Active</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+            <span class="text-xs text-slate-600 font-semibold">BSc Computer Science</span>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-sm">
+            <thead>
+                <tr class="border-b border-slate-200">
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">#</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Code</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Course Name</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Credit Units</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Description</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for course in courses %}
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 text-slate-400 text-xs">{{ forloop.counter }}</td>
+                    <td class="py-3 px-4">
+                        <span class="font-mono text-xs font-bold px-2 py-1 bg-slate-100 text-slate-700 rounded">{{ course.code }}</span>
+                    </td>
+                    <td class="py-3 px-4 font-semibold text-slate-800">{{ course.name }}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-xs font-bold">{{ course.credit_units }} CU</span>
+                    </td>
+                    <td class="py-3 px-4 text-slate-400 text-xs italic">{{ course.description|default:"—" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="py-10 text-center text-slate-400 text-sm">No courses added yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

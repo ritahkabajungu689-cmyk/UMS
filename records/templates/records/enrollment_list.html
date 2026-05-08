@@ -1,0 +1,48 @@
+{% extends 'records/base.html' %}
+{% block content %}
+<div class="bg-white rounded-md shadow-sm border border-cardBorder p-6">
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+                <h3 class="text-lg font-bold text-slate-800 leading-tight">Enrollment Records</h3>
+                <p class="text-[10px] text-slate-400 uppercase tracking-wider">Proof of Registration</p>
+            </div>
+        </div>
+        <a href="{% url 'create_enrollment' %}" class="inline-flex items-center gap-2 bg-sidebar text-white text-xs font-semibold px-4 py-2 rounded hover:bg-sidebarActive transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            New Enrollment
+        </a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="border-b border-slate-200">
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Student</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Course</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Semester</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Registered On</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for e in enrollments %}
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 font-medium text-slate-800">{{ e.student.user.get_full_name|default:e.student.user.username }}</td>
+                    <td class="py-3 px-4 text-slate-600">{{ e.course.name }}</td>
+                    <td class="py-3 px-4 text-slate-600">{{ e.semester }}</td>
+                    <td class="py-3 px-4 text-slate-500">{{ e.registered_on|date:"M d, Y" }}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-0.5 rounded text-xs font-semibold {% if e.status == 'registered' %}bg-green-100 text-green-700{% elif e.status == 'completed' %}bg-blue-100 text-blue-700{% else %}bg-red-100 text-red-600{% endif %}">
+                            {{ e.get_status_display }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="py-8 text-center text-slate-400 text-sm">No enrollments recorded yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

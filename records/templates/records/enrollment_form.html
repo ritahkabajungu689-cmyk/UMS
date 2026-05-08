@@ -1,0 +1,27 @@
+{% extends 'records/base.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-md shadow-sm border border-cardBorder p-6">
+    <div class="flex items-center gap-3 mb-6">
+        <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <div>
+            <h3 class="text-lg font-bold text-slate-800">New Enrollment</h3>
+            <p class="text-[10px] text-slate-400 uppercase tracking-wider">Registry Office</p>
+        </div>
+    </div>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded">{{ form.non_field_errors }}</div>{% endif %}
+        {% for field in form %}
+        <div class="space-y-1">
+            <label class="block text-sm font-semibold text-slate-700">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<p class="text-xs text-red-500">{{ field.errors.0 }}</p>{% endif %}
+        </div>
+        {% endfor %}
+        <div class="flex gap-3 pt-2">
+            <button type="submit" class="bg-sidebar text-white text-sm font-semibold px-6 py-2.5 rounded hover:bg-sidebarActive transition">Save Enrollment</button>
+            <a href="{% url 'enrollment_list' %}" class="bg-slate-100 text-slate-700 text-sm font-semibold px-6 py-2.5 rounded hover:bg-slate-200 transition">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

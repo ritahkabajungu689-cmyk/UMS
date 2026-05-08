@@ -1,0 +1,229 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cavendish University Uganda — Student Portal 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        sidebar: '#232838',
+                        sidebarActive: '#333b4d',
+                        background: '#f0f2f5',
+                        cardBorder: '#e2e8f0',
+                        textMain: '#1e293b',
+                        textMuted: '#94a3b8',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        input[type="text"], input[type="password"], input[type="email"], select, textarea {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.25rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, select:focus, textarea:focus {
+            border-color: #232838;
+            box-shadow: 0 0 0 1px #232838;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased overflow-hidden flex h-screen">
+
+{% if user.is_authenticated %}
+    <!-- Sidebar -->
+    <aside class="w-64 bg-sidebar text-slate-300 flex-shrink-0 h-full flex flex-col z-20">
+        
+        <!-- Navigation Links -->
+        <nav class="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+            <div class="mb-6 px-3 flex items-center gap-3">
+                <div class="w-6 h-6 grid grid-cols-2 gap-0.5">
+                    <div class="bg-white rounded-sm"></div>
+                    <div class="bg-white rounded-sm"></div>
+                    <div class="bg-white rounded-sm"></div>
+                    <div class="bg-white rounded-sm"></div>
+                </div>
+                <div>
+                    <span class="text-white font-bold text-sm leading-tight block">Cavendish University</span>
+                    <span class="text-slate-400 text-[10px] uppercase tracking-wider">Uganda &mdash; 2026</span>
+                </div>
+            </div>
+            
+            {% with current=request.resolver_match.url_name %}
+            
+            <a href="{% url 'dashboard' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'dashboard' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="currentColor" viewBox="0 0 20 20"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                Dashboard
+            </a>
+
+            {% if user.userprofile.role == 'student' %}
+            <a href="{% url 'profile' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'profile' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                Profile
+            </a>
+            <a href="{% url 'payment_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'payment_list' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                Payments
+            </a>
+            <a href="{% url 'course_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'course_list' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                Courses
+            </a>
+            <a href="{% url 'result_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'result_list' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Live Results
+            </a>
+
+            {% endif %}
+
+            {% if user.userprofile.role == 'registry' %}
+            <a href="{% url 'student_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'student_list' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Enroll Students
+            </a>
+            <a href="{% url 'register_student' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'register_student' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                Register Student
+            </a>
+            <a href="{% url 'enrollment_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'enrollment_list' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Proof of Registration
+            </a>
+            <a href="{% url 'create_enrollment' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'create_enrollment' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                New Enrollment
+            </a>
+            {% endif %}
+
+            {% if user.userprofile.role == 'finance' %}
+            <a href="{% url 'payment_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'payment_list' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                All Payments
+            </a>
+            <a href="{% url 'create_payment' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'create_payment' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                Record Payment
+            </a>
+            {% endif %}
+
+            {% if user.userprofile.role == 'administrator' %}
+            <a href="{% url 'overall_report' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'overall_report' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                System Report
+            </a>
+            <a href="{% url 'student_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'student_list' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                All Students
+            </a>
+            <a href="{% url 'payment_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'payment_list' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                All Payments
+            </a>
+            <a href="{% url 'result_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'result_list' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                All Results
+            </a>
+            <a href="{% url 'course_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'course_list' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                All Courses
+            </a>
+            {% endif %}
+
+            {% if user.userprofile.role == 'lecturer' %}
+            <a href="{% url 'result_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'result_list' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                View Results
+            </a>
+            <a href="{% url 'create_result' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'create_result' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                Add Result
+            </a>
+            <a href="{% url 'course_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'course_list' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                Course Materials
+            </a>
+            <a href="{% url 'course_create' %}" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 {% if current == 'course_create' %}bg-sidebarActive text-white border-l-4 border-white{% else %}hover:bg-white/5 border-l-4 border-transparent{% endif %}">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                Add Course
+            </a>
+            {% endif %}
+            
+            {% endwith %}
+        </nav>
+        
+        <!-- Settings at bottom -->
+        <div class="p-4 mt-auto">
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-200 hover:bg-white/5 text-slate-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Settings
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden bg-background">
+        
+        <!-- Top Bar -->
+        <header class="h-20 px-8 flex items-center justify-between flex-shrink-0">
+            <div class="flex-1 max-w-xl">
+                <div class="relative flex items-center">
+                    <input type="text" placeholder="Search Services" class="w-full bg-white border-none rounded-md py-2.5 pl-4 pr-10 text-sm text-slate-700 shadow-sm focus:ring-0">
+                    <div class="absolute right-3 text-slate-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4 ml-4 px-4 py-2">
+                <span class="text-sm font-semibold text-slate-800">{{ user.get_full_name|default:user.username }}</span>
+                <div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-300">
+                    <svg class="w-full h-full text-slate-400 mt-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                </div>
+                <div class="w-px h-6 bg-slate-300 mx-1"></div>
+                <a href="{% url 'logout' %}" class="text-slate-400 hover:text-slate-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Content Scroll Area -->
+        <main class="flex-1 overflow-y-auto p-8 pt-2">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="bg-white border-l-4 border-blue-500 p-4 mb-6 rounded shadow-sm">
+                        <p class="text-sm text-slate-700">{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+{% else %}
+    <div class="flex-1 bg-background min-h-screen w-full overflow-y-auto py-12 px-4 flex justify-center">
+        <div class="w-full max-w-md my-auto">
+            {% block auth_content %}{% endblock %}
+        </div>
+    </div>
+{% endif %}
+</body>
+</html>

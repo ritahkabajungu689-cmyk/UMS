@@ -1,0 +1,60 @@
+{% extends 'records/base.html' %}
+{% block content %}
+<div class="bg-white rounded-md shadow-sm border border-cardBorder p-6">
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <div>
+                <h3 class="text-lg font-bold text-slate-800 leading-tight">Student Registry</h3>
+                <p class="text-[10px] text-slate-400 uppercase tracking-wider">All Registered Students</p>
+            </div>
+        </div>
+        <a href="{% url 'register_student' %}" class="inline-flex items-center gap-2 bg-sidebar text-white text-xs font-semibold px-4 py-2 rounded hover:bg-sidebarActive transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            Register Student
+        </a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="border-b border-slate-200">
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Photo</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Name</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Adm. No.</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Department</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Programme</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Phone</th>
+                    <th class="py-3 px-4 text-xs font-bold text-slate-500 uppercase">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for student in students %}
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4">
+                        <div class="w-9 h-9 rounded border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center">
+                            {% if student.photo %}
+                                <img src="{{ student.photo.url }}" class="w-full h-full object-cover" alt="Photo">
+                            {% else %}
+                                <svg class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 font-medium text-slate-800">{{ student.user.get_full_name|default:student.user.username }}</td>
+                    <td class="py-3 px-4 text-slate-600">{{ student.admission_number }}</td>
+                    <td class="py-3 px-4 text-slate-600">{{ student.department }}</td>
+                    <td class="py-3 px-4 text-slate-600">{{ student.programme }}</td>
+                    <td class="py-3 px-4 text-slate-600">{{ student.phone|default:"—" }}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-0.5 rounded text-xs font-semibold {% if student.status == 'active' %}bg-green-100 text-green-700{% elif student.status == 'graduated' %}bg-blue-100 text-blue-700{% else %}bg-slate-100 text-slate-500{% endif %}">
+                            {{ student.get_status_display }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="py-8 text-center text-slate-400 text-sm">No students registered yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
