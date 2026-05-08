@@ -28,7 +28,31 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']  # Can be restricted to ['.vercel.app', 'localhost'] for production
 
-CSRF_TRUSTED_ORIGINS = ['https://*.vercel.app', 'http://127.0.0.1', 'http://localhost']
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.vercel.app', 
+    'http://127.0.0.1', 
+    'http://localhost',
+    'https://*.ngrok-free.app',
+    'https://*.ngrok.io'
+]
+
+# Allow all local network IPs dynamically for development (e.g., 192.168.x.x)
+if DEBUG:
+    import socket
+    try:
+        hostname = socket.gethostname()
+        local_ip = socket.gethostbyname(hostname)
+        # Adding common local network subnets just in case
+        for i in range(256):
+            CSRF_TRUSTED_ORIGINS.append(f'http://192.168.0.{i}')
+            CSRF_TRUSTED_ORIGINS.append(f'http://192.168.1.{i}')
+            CSRF_TRUSTED_ORIGINS.append(f'http://192.168.8.{i}')
+            CSRF_TRUSTED_ORIGINS.append(f'http://10.0.0.{i}')
+            if local_ip not in CSRF_TRUSTED_ORIGINS:
+                CSRF_TRUSTED_ORIGINS.append(f'http://{local_ip}')
+    except:
+        pass
+
 # If testing locally on mobile via IP (e.g. 192.168.X.X), add it dynamically or just disable SSL proxy header locally
 if os.environ.get('VERCEL') == '1':
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -46,10 +70,30 @@ INSTALLED_APPS = [
     'records',
 ]
 
+class DynamicCSRFMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        origin = request.headers.get('Origin')
+        if origin and origin not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(origin)
+        
+        # Also handle cases where Origin isn't present but Host is (fallback)
+        host = request.headers.get('Host')
+        if host:
+            scheme = request.scheme
+            host_origin = f"{scheme}://{host}"
+            if host_origin not in CSRF_TRUSTED_ORIGINS:
+                CSRF_TRUSTED_ORIGINS.append(host_origin)
+                
+        return self.get_response(request)
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'students_records_management_system.settings.DynamicCSRFMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
