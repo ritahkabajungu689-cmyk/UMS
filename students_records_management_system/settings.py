@@ -82,6 +82,17 @@ DATABASES = {
     }
 }
 
+# Vercel Serverless Read-Only Filesystem Workaround
+if os.environ.get('VERCEL') == '1':
+    import shutil
+    tmp_db = '/tmp/db.sqlite3'
+    source_db = BASE_DIR / 'db.sqlite3'
+    # Copy the database to the writable /tmp directory if it hasn't been copied yet for this instance
+    if not os.path.exists(tmp_db) and os.path.exists(source_db):
+        shutil.copy2(source_db, tmp_db)
+    
+    DATABASES['default']['NAME'] = tmp_db
+
 # Update database configuration if DATABASE_URL is set in environment
 database_url = os.environ.get("DATABASE_URL")
 if database_url:
