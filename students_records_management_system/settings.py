@@ -28,8 +28,10 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']  # Can be restricted to ['.vercel.app', 'localhost'] for production
 
-CSRF_TRUSTED_ORIGINS = ['https://*.vercel.app']
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_TRUSTED_ORIGINS = ['https://*.vercel.app', 'http://127.0.0.1', 'http://localhost']
+# If testing locally on mobile via IP (e.g. 192.168.X.X), add it dynamically or just disable SSL proxy header locally
+if os.environ.get('VERCEL') == '1':
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
