@@ -47,11 +47,14 @@
         }
     </style>
 </head>
-<body class="text-slate-800 antialiased overflow-hidden flex h-screen">
+<body class="text-slate-800 antialiased overflow-hidden flex h-screen relative">
 
 {% if user.is_authenticated %}
+    <!-- Mobile Sidebar Backdrop -->
+    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-20 hidden lg:hidden transition-opacity opacity-0 duration-300"></div>
+
     <!-- Sidebar -->
-    <aside class="w-64 bg-sidebar text-slate-300 flex-shrink-0 h-full flex flex-col z-20">
+    <aside id="sidebar" class="w-64 bg-sidebar text-slate-300 flex-shrink-0 h-full flex flex-col z-30 fixed lg:relative inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
         
         <!-- Navigation Links -->
         <nav class="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
@@ -180,15 +183,20 @@
     </aside>
 
     <!-- Main Content Wrapper -->
-    <div class="flex-1 flex flex-col h-screen overflow-hidden bg-background">
+    <div class="flex-1 flex flex-col h-screen overflow-hidden bg-background w-full min-w-0">
         
         <!-- Top Bar -->
-        <header class="h-20 px-8 flex items-center justify-between flex-shrink-0">
-            <div class="flex-1 max-w-xl">
-                <div class="relative flex items-center">
-                    <input type="text" placeholder="Search Services" class="w-full bg-white border-none rounded-md py-2.5 pl-4 pr-10 text-sm text-slate-700 shadow-sm focus:ring-0">
+        <header class="h-16 md:h-20 px-4 md:px-8 flex items-center justify-between flex-shrink-0 bg-white md:bg-transparent shadow-sm md:shadow-none z-10 relative">
+            <div class="flex items-center flex-1 max-w-xl gap-2 md:gap-4">
+                <!-- Mobile Hamburger Menu -->
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-md transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                
+                <div class="relative flex items-center w-full max-w-[200px] md:max-w-full">
+                    <input type="text" placeholder="Search..." class="w-full bg-slate-100 md:bg-white border-none rounded-md py-2 md:py-2.5 pl-4 pr-10 text-sm text-slate-700 shadow-none md:shadow-sm focus:ring-0">
                     <div class="absolute right-3 text-slate-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
                 </div>
             </div>
@@ -225,5 +233,27 @@
         </div>
     </div>
 {% endif %}
+
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
+        
+        if (sidebar && backdrop) {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                // Open
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+                // small delay to allow display:block to apply before transition
+                setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+            } else {
+                // Close
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('opacity-0');
+                setTimeout(() => backdrop.classList.add('hidden'), 300);
+            }
+        }
+    }
+</script>
 </body>
 </html>
