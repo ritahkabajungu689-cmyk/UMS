@@ -1,12 +1,6 @@
 # UMS: Unified University Management System
 > **The Centralized Intelligence Hub for Academic and Administrative Excellence.**
 
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Framework: Django](https://img.shields.io/badge/Framework-Django-092E20.svg)](https://www.djangoproject.com/)
-[![Deployment: Vercel](https://img.shields.io/badge/Deployment-Vercel-000000.svg)](https://vercel.com/)
-[![Database: PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-336791.svg)](https://www.postgresql.org/)
-
 ---
 
 ##  Project Overview
@@ -79,7 +73,7 @@ Real-time metrics for institutional decision-making:
 ### Installation
 1.  **Clone the Repository**:
     ```bash
-    git clone https://github.com/your-username/UMS.git
+    git clone https://github.com/ritahkabajungu689-cmyk/UMS.git
     ```
 2.  **Install Dependencies**:
     ```bash
@@ -99,12 +93,5 @@ Real-time metrics for institutional decision-making:
     ```
 
 ---
-
-##  License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
 ### **Developed by THE INTELLECTS**
 *Engineering the future of academic management through scalable digital solutions.*
