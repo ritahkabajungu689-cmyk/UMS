@@ -7,8 +7,6 @@
 
 **UMS (University Management System)** is an enterprise-grade, role-based platform designed to streamline the complex operations of modern educational institutions. From student registration and course management to financial auditing and academic reporting, UMS provides a unified interface for students, lecturers, and administrative staff to interact with real-time data.
 
----
-
 ##  The Problem Statement
 
 Traditional university administration often suffers from "Information Silos"—where different departments use disconnected tools to manage their specific domains.
